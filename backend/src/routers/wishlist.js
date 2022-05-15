@@ -1,5 +1,4 @@
-const { customers, items } = require('../data/data');
-const wishListItem = require('../classes/wishListItem');
+const { items } = require('../data/data');
 const koaRouter = require('@koa/router');
 const { customerAuth } = require('../middleware/auth');
 const router = new koaRouter();
@@ -7,7 +6,7 @@ const router = new koaRouter();
 // add an item to the wishList
 router.post('/wishList/addItem', customerAuth, (ctx) => {
     try {
-        const { itemName, quantity } = ctx.request.body;
+        const { itemName } = ctx.request.body;
         console.log('Adding item to wishList');
         // find the item
         const item = items.get(itemName);
