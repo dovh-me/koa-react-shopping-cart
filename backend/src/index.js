@@ -1,10 +1,12 @@
 const koa = require('koa');
 const koaRouter = require('@koa/router');
 const koaBody = require('koa-body');
+const koaCors = require('@koa/cors');
 
 const app = new koa();
 const router = new koaRouter();
 
+app.use(koaCors());
 app.use(koaBody());
 // routers
 const customerRouter = require('./routers/customer');
