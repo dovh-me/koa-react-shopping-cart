@@ -6,7 +6,7 @@ module.exports = class Person {
         // encrypt the password if possible
         this.password = password;
         this.email = email;
-        this.joinedOn = new Date();
+        this.dateJoined = Date();
 
     }
 

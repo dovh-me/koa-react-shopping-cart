@@ -1,3 +1,5 @@
+const Person = require('./Person');
+
 module.exports = class Trader extends Person {
     constructor(responseBody) {
         super(responseBody);

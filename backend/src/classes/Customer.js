@@ -1,3 +1,5 @@
+const Person = require('./Person');
+
 module.exports = class Customer extends Person {
     constructor(responseBody) {
         super(responseBody);
