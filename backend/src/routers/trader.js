@@ -1,6 +1,4 @@
-import Trader from '../classes/Trader';
-
-const { traders } = require('../data/data');
+const Trader = require('../classes/Trader');
 
 const koaRouter = require('@koa/router');
 const router = new koaRouter();
@@ -89,4 +87,4 @@ router.get('/traders/inventory', traderAuth, (ctx) => {
     }
 });
 
-export default router;
+module.exports = router;
