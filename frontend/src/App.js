@@ -1,23 +1,40 @@
 import React, { Component } from "react";
-import { Route } from "react-router-dom";
-import "./App.css";
+import { Outlet, Navigate } from "react-router-dom";
 
-import LoginScreen from './components/LoginScreen';
+import Login from "./pages/Login";
+
+import "./App.css";
 
 class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            loginToken: undefined
+            loginToken: localStorage.getItem('loginToken')
         }
+        this.checkLoginToken = this.checkLoginToken.bind(this);
+    }
+
+    handleErrors() {
+        // todo - handling at component level
+    }
+
+    checkLoginToken(token) {
+        const tokenFromLocalStorage = localStorage.getItem('loginToken');
+        this.setState({ loginToken: tokenFromLocalStorage });
     }
 
     render() {
-        return (
-            <div className="App">
-                <LoginScreen />
-            </div>
-        );
+        const loginToken = this.state.loginToken;
+        if (loginToken === null || loginToken === undefined) {
+            return (
+                <div>
+                    <div id="errors"></div>
+                    <Login onLoginSuccess={this.checkLoginToken} />
+                </div>
+            )
+        } else {
+            return <div>Already logged in!</div>
+        }
     }
 }
 
