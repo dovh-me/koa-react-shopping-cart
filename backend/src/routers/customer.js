@@ -18,7 +18,13 @@ router.post('/customers/create', (ctx) => {
         } else {
             // remove the duplicated username in the body
             // validate if only allowed fields are provided
-            customers.set(body.username, new Customer(body))
+            customers.set(body.username, new Customer(body));
+
+            // delete the password from the response body
+            delete body.password;
+
+            ctx.body = { message: 'user created', ...body };
+            ctx.status = 201;
         }
     } catch (e) {
         console.log(e);

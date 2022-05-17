@@ -19,7 +19,13 @@ router.post('/traders/create', (ctx) => {
     } else {
         // remove the duplicated username in the body
         // validate if only allowed fields are provided
-        traders.set(body.username, new Trader(body));
+        customers.set(body.username, new Trader(body));
+
+        // delete the password from the response body
+        delete body.password;
+
+        ctx.body = { message: 'user created', ...body };
+        ctx.status = 201;
     }
 });
 
