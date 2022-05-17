@@ -14,10 +14,6 @@ class App extends Component {
         this.checkLoginToken = this.checkLoginToken.bind(this);
     }
 
-    handleErrors() {
-        // todo - handling at component level
-    }
-
     checkLoginToken(token) {
         const tokenFromLocalStorage = localStorage.getItem('loginToken');
         this.setState({ loginToken: tokenFromLocalStorage });
