@@ -1,6 +1,6 @@
 const Item = require('../classes/Item');
-import { items } from '../data/data';
-import { customerAuth, traderAuth } from '../middleware/auth';
+const { items } = require('../data/data');
+const { customerAuth, traderAuth } = require('../middleware/auth');
 
 const koaRouter = require('@koa/router');
 const router = new koaRouter();
@@ -8,12 +8,14 @@ const router = new koaRouter();
 // add new item
 router.post('/item/create', traderAuth, async (ctx) => {
     try {
-        const item = new Item(ctx.body);
-
+        const itemRaw = ctx.request.body;
+        itemRaw.trader = ctx.user.username;
+        const item = new Item(itemRaw);
         items.set(item.name, item);
+
         ctx.body = {
             message: 'item added',
-            item
+            inventory: ctx.user.getInventory()
         }
         ctx.status = 201;
     } catch (e) {
@@ -29,9 +31,11 @@ router.patch('/item/update/:itemName', traderAuth, async (ctx) => {
         const itemName = ctx.params.itemName;
         // find the item 
         const item = items.get(itemName);
-        item.updateItem(ctx.body);
+        if (!item) ctx.throw(404, 'invalid item name');
+        if (item.trader !== ctx.user.username) ctx.throw(401, 'unauthorized operation');
+        item.updateItem(ctx.request.body);
 
-        ctx.body = { item };
+        ctx.body = { inventory: ctx.user.getInventory() };
         ctx.status = 201;
     } catch (e) {
         console.log(e);
@@ -48,6 +52,9 @@ router.delete('/item/delete/:itemName', traderAuth, async (ctx) => {
         if (!itemToRemove) return ctx.throw(400, 'invalid item');
         // check whether the trader is matching
         if (ctx.user.username !== itemToRemove.trader) return ctx.throw(401, 'Not authorized');
+        items.delete(ctx.params.itemName);
+        ctx.body = { inventory: ctx.user.getInventory() };
+        ctx.status = 201;
     } catch (e) {
         console.log(e);
     }
@@ -72,8 +79,8 @@ router.get('/item/get/:name', (ctx) => {
 
 router.get('/item/getAll', (ctx) => {
     // send all the items in the items map
-    ctx.body = Array.from(items.values());
+    ctx.body = { allItems: Array.from(items.values()) };
     ctx.status = 201;
 })
 
-export default router;
+module.exports = router;

@@ -1,4 +1,4 @@
-const { customers, items } = require('../data/data');
+const { items } = require('../data/data');
 const CartItem = require('../classes/CartItem');
 const koaRouter = require('@koa/router');
 const { customerAuth } = require('../middleware/auth');
@@ -30,11 +30,12 @@ router.delete('/cart/removeItem/:itemName', customerAuth, (ctx) => {
         const itemName = ctx.params.itemName;
         const cart = ctx.user.cart;
 
-        const itemIndex = cart.findIndex(e => e.itemName === itemName);
+        const itemIndex = cart.findIndex(e => e.name === itemName);
         if (itemIndex < -1) throw new Error('item not found');
         ctx.user.cart = cart.splice(itemIndex, 1);
         // send the updated cart as the response
         ctx.body = { cart: ctx.user.cart }
+        ctx.status = 201;
     } catch (e) {
         console.log(e);
         ctx.body = { error: e.message }
@@ -44,15 +45,28 @@ router.delete('/cart/removeItem/:itemName', customerAuth, (ctx) => {
 
 // purchase list of items
 router.post('/cart/purchase', customerAuth, (ctx) => {
-    const user = customers.get(ctx.user.username);
-    user.tokens.filter(e => e !== ctx.user.token);
+    const reqBody = ctx.request.body;
+    const user = ctx.user;
+
+    const userCart = user.cart.filter((item) => {
+        reqBody.items.includes(item.name)
+    })
+
+    userCart.forEach((item) => {
+        item.purchase();
+        // remove the purchase item from the user cart
+        user.cart.filter((e) => !(e.name === item));
+    });
 });
 
 // get public customer data
 router.get('/cart/viewAll', customerAuth, (ctx) => {
     try {
+        console.log('/cart/viewAll router - fetch cart request')
         const user = ctx.user;
-        ctx.body = { cart: user.cart }
+        // get cart item details from the items map
+        const cart = user.getCart();
+        ctx.body = { cart }
     } catch (e) {
         console.log(e);
         ctx.body = { error: e };
