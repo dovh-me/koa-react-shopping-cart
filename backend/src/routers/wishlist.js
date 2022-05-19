@@ -43,7 +43,7 @@ router.delete('/wishList/removeItem/:itemName', customerAuth, (ctx) => {
 router.get('/wishList/viewAll', customerAuth, (ctx) => {
     try {
         const user = ctx.user;
-        ctx.body = { wishList: user.wishList }
+        ctx.body = { wishList: user.getWishlist() }
     } catch (e) {
         console.log(e);
         ctx.body = { error: e };

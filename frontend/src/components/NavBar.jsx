@@ -30,9 +30,9 @@ export class NavBar extends React.Component {
                             </li>
                             <li className="nav-item">
                                 {
-                                    localStorage.getItem('loginToken') !== undefined
+                                    (localStorage.getItem('loginToken') && localStorage.getItem('loginToken') !== 'undefined')
                                     &&
-                                    localStorage.getItem('loginType') !== undefined
+                                    (localStorage.getItem('loginType') && localStorage.getItem('loginType') !== 'undefined')
                                     &&
                                     <Link className="nav-link" to="/logout">Logout</Link >
                                 }
