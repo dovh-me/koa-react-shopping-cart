@@ -1,5 +1,6 @@
 const Trader = require('../classes/Trader');
 
+const jwt = require('jsonwebtoken');
 const koaRouter = require('@koa/router');
 const router = new koaRouter();
 
@@ -19,7 +20,7 @@ router.post('/traders/create', (ctx) => {
     } else {
         // remove the duplicated username in the body
         // validate if only allowed fields are provided
-        customers.set(body.username, new Trader(body));
+        traders.set(body.username, new Trader(body));
 
         // delete the password from the response body
         delete body.password;
@@ -30,7 +31,7 @@ router.post('/traders/create', (ctx) => {
 });
 
 // login trader
-router.post('/traders/login', traderAuth, (ctx) => {
+router.post('/traders/login', (ctx) => {
     try {
         console.log('login router');
         const body = ctx.request.body;
@@ -44,7 +45,7 @@ router.post('/traders/login', traderAuth, (ctx) => {
 
             // create a new token
             const token = jwt.sign({ username: trader.username, password: trader.password }, traderKey);
-            trader.tokens = trader.tokens instanceof Array ? trader.tokens.push(token) : [token];
+            trader.tokens = trader.tokens instanceof Array ? [...trader.tokens, token] : [token];
             ctx.body = {
                 username: trader.username,
                 dateJoined: trader.dateJoined,
@@ -62,7 +63,9 @@ router.post('/traders/login', traderAuth, (ctx) => {
 
 router.get('/traders/logout', traderAuth, (ctx) => {
     const user = traders.get(ctx.user.username);
-    user.tokens.filter(e => e !== ctx.user.token);
+    user.tokens = user.tokens.filter(e => e !== ctx.user.token);
+    ctx.body = { message: 'logout success' };
+    ctx.status = 201;
 });
 
 // get public trader data
@@ -84,7 +87,7 @@ router.get('/traders/inventory', traderAuth, (ctx) => {
     try {
         if (!ctx.user) throw new Error('user error');
 
-        ctx.body = { inventory: ctx.user.inventory };
+        ctx.body = { inventory: ctx.user.getInventory() };
         ctx.status = 201;
     } catch (e) {
         console.log(e);

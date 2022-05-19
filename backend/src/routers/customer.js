@@ -48,7 +48,7 @@ router.post('/customers/login', (ctx) => {
 
             // create a new token
             const token = jwt.sign({ username: customer.username, password: customer.password }, customerKey);
-            customer.tokens = customer.tokens instanceof Array ? customer.tokens.push(token) : [token];
+            customer.tokens = customer.tokens instanceof Array ? [...customer.tokens, token] : [token];
             ctx.body = {
                 username: customer.username,
                 dateJoined: customer.dateJoined,
@@ -66,7 +66,9 @@ router.post('/customers/login', (ctx) => {
 
 router.get('/customers/logout', customerAuth, (ctx) => {
     const user = customers.get(ctx.user.username);
-    user.tokens.filter(e => e !== ctx.user.token);
+    user.tokens = user.tokens.filter(e => e !== ctx.user.token);
+    ctx.body = { message: 'logout success' };
+    ctx.status = 201;
 });
 
 // get public customer data

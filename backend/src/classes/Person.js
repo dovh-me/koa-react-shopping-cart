@@ -7,7 +7,7 @@ module.exports = class Person {
         this.password = password;
         this.email = email;
         this.dateJoined = Date();
-
+        this.tokens = [];
     }
 
     toJson(excludeList) {
