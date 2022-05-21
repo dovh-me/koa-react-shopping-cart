@@ -1,18 +1,21 @@
 const { items } = require('../data/data');
 const koaRouter = require('@koa/router');
 const { customerAuth } = require('../middleware/auth');
+const CartItem = require('../classes/CartItem');
 const router = new koaRouter();
 
-// add an item to the wishList
-router.post('/wishList/addItem', customerAuth, (ctx) => {
+// add an item to the wishlist
+router.post('/wishlist/addItem', customerAuth, (ctx) => {
     try {
-        const { itemName } = ctx.request.body;
-        console.log('Adding item to wishList');
+        console.log('Adding item to wishlist');
+        const reqItem = ctx.request.body.item;
+        if (!reqItem) ctx.throw(400, 'item required');
         // find the item
-        const item = items.get(itemName);
-        if (!item) return ctx.throw(401, 'invalid item');
+        const item = new CartItem(reqItem);
 
-        ctx.user.wishList.push(item.name);
+        ctx.user.wishlist.push(item);
+        ctx.body = { message: 'item added to wishlist', item }
+        ctx.status = 201;
     } catch (e) {
         console.log(e);
         ctx.body = { error: e };
@@ -20,18 +23,19 @@ router.post('/wishList/addItem', customerAuth, (ctx) => {
     }
 });
 
-// remove an item from the wishList
-router.delete('/wishList/removeItem/:itemName', customerAuth, (ctx) => {
+// remove an item from the wishlist
+router.post('/wishlist/removeItem', customerAuth, (ctx) => {
     try {
-        console.log(`Removing an item from the wishList`);
-        const itemName = ctx.params.itemName;
-        const wishList = ctx.user.wishList;
+        console.log(`Removing an item from the wishlist`);
+        console.log({ user: ctx.user })
+        const { name, quantity } = ctx.request.body.item;
+        const wishlist = ctx.user.wishlist;
 
-        const itemIndex = wishList.findIndex(e => e.itemName === itemName);
-        if (itemIndex < -1) throw new Error('item not found');
-        ctx.user.wishList = wishList.splice(itemIndex, 1);
-        // send the updated wishList as the response
-        ctx.body = { wishList: ctx.user.wishList }
+        const itemIndex = wishlist.findIndex(e => e.name === name && e.quantity === quantity);
+        if (itemIndex < 0) throw new Error('item not found');
+        ctx.user.wishlist = wishlist.splice(itemIndex, 1);
+        // send the updated wishlist as the response
+        ctx.body = { wishlist: ctx.user.getWishlist() }
     } catch (e) {
         console.log(e);
         ctx.body = { error: e.message }
@@ -40,15 +44,39 @@ router.delete('/wishList/removeItem/:itemName', customerAuth, (ctx) => {
 });
 
 // get public customer data
-router.get('/wishList/viewAll', customerAuth, (ctx) => {
+router.get('/wishlist/viewAll', customerAuth, (ctx) => {
     try {
         const user = ctx.user;
-        ctx.body = { wishList: user.getWishlist() }
+        ctx.body = { wishlist: user.getWishlist() }
     } catch (e) {
         console.log(e);
         ctx.body = { error: e };
         ctx.status = 401;
     }
 });
+
+router.post('/wishlist/moveToCart', customerAuth, (ctx) => {
+    try {
+        const user = ctx.user;
+        if (!user) ctx.throw(401, 'user not found');
+
+        const reqItem = ctx.request.body.item;
+        if (!reqItem) ctx.throw(400, 'item required');
+
+        // find the item from the wishlist
+        const itemIndex = ctx.user.wishlist.findIndex((item) => item.name === reqItem.name && item.quantity === reqItem.quantity);
+        if (itemIndex < 0) ctx.throw(400, 'item not found');
+        else {
+            let item = ctx.user.wishlist.splice(itemIndex, 1);
+            item = item && item[0];
+            ctx.user.cart.push(item);
+
+            ctx.body = { wishlist: ctx.user.getWishlist() };
+            ctx.status = 201;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+})
 
 module.exports = router;
