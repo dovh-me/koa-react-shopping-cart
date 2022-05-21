@@ -1,16 +1,9 @@
 import React from 'react'
 
 function ErrorAlert(props) {
-    const errorAlert = {
-        borderRadius: '10px',
-        padding: '5px',
-        margin: '0px 5px',
-        color: 'rgb(255, 194, 196)',
-        backgroundColor: 'rgb(160, 0, 0)',
-    }
     return (
-        <div style={errorAlert}>
-            <div className='errorTitle'>
+        <div className="alert alert-danger">
+            <div className='alert-heading'>
                 Error!
             </div>
             <div className='errorBody'>

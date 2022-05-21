@@ -14,7 +14,8 @@ export default class Logout extends Component {
         console.log('inside handle logout function')
         localStorage.removeItem('loginToken');
         localStorage.removeItem('loginType');
-        console.log({ loginToken: localStorage.removeItem('loginToken'), loginType: localStorage.removeItem('loginType') })
+        console.log({ loginToken: localStorage.removeItem('loginToken'), loginType: localStorage.removeItem('loginType') });
+        this.props.onLogoutSuccess();
         if ((!localStorage.getItem('loginToken')) && (!localStorage.getItem('loginType')))
             this.setState({ message: 'Logout success!' });
         return true;
