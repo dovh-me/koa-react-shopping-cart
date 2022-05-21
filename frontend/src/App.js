@@ -12,7 +12,7 @@ import SearchCustomer from "./pages/SearchCustomer";
 import { NavBar } from './components/NavBar';
 
 import "./App.css";
-import Welcome from "./pages/TempLogin";
+import Welcome from "./pages/Welcome";
 
 class App extends Component {
     constructor(props) {
@@ -80,7 +80,7 @@ class App extends Component {
                 <NavBar isLoggedIn={this.state.isLoginSuccess} loginData={this.state.loginData} />
                 <Routes>
                 // render the login page if loginToken is not set. Else render the dashboard
-                    <Route path="/" element={<Login onLoginSuccess={this.setLoginSuccess} isLoginSuccess={this.state.isLoginSuccess} />} />
+                    <Route path="/" element={<Welcome onLoginSuccess={this.setLoginSuccess} isLoginSuccess={this.state.isLoginSuccess} />} />
                     <Route path="/home" element={<Home isLoggedIn={this.state.isLoginSuccess} loginData={this.state.loginData} />} />
                     <Route path="/logout" element={<Logout onLogoutSuccess={this.setLogoutSuccess} />} />
                     <Route path="/store" element={<Store loginData={this.state.loginData} />} />
