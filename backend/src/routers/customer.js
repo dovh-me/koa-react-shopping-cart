@@ -74,12 +74,14 @@ router.get('/customers/logout', customerAuth, (ctx) => {
 // get public customer data
 router.get('/customers/get/:username', traderAuth, (ctx) => {
     try {
-        const user = traders.get(ctx.params.username);
+        const user = customers.get(ctx.params.username.trim());
 
-        if (user) {
-            ctx.body = user.toPublicJson();
-            ctx.status = 201;
-        }
+        if (!user) ctx.throw(401, 'customer not found');
+        console.log({ publicJson: user.toPublicJson() });
+
+        ctx.body = { customer: user.toPublicJson() };
+        ctx.status = 201;
+
     } catch (e) {
         console.log(e);
     }
