@@ -7,15 +7,17 @@ const router = new koaRouter();
 // add an item to the cart
 router.post('/cart/addItem', customerAuth, (ctx) => {
     try {
-        const { itemName, quantity } = ctx.request.body;
+        const { name, quantity } = ctx.request.body;
         console.log('Adding item to cart');
         // find the item
-        const item = items.get(itemName);
+        const item = items.get(name);
         if (!item) return ctx.throw(401, 'invalid item');
 
         if (item.quantity < quantity) return ctx.throw(401, 'insufficient stocks in the inventory');
 
-        ctx.user.cart.push(new CartItem(item.name, ctx.body.quantity));
+        ctx.user.cart.push(new CartItem({ name: item.name, quantity }));
+        ctx.body = { message: 'Item added successfully' };
+        ctx.status = 201;
     } catch (e) {
         console.log(e);
         ctx.body = { error: e };
@@ -24,39 +26,55 @@ router.post('/cart/addItem', customerAuth, (ctx) => {
 });
 
 // remove an item from the cart
-router.delete('/cart/removeItem/:itemName', customerAuth, (ctx) => {
+router.post('/cart/removeItem', customerAuth, (ctx) => {
     try {
         console.log(`Removing an item from the cart`);
-        const itemName = ctx.params.itemName;
+        const data = ctx.request.body;
         const cart = ctx.user.cart;
+        console.log({ data });
 
-        const itemIndex = cart.findIndex(e => e.name === itemName);
-        if (itemIndex < -1) throw new Error('item not found');
-        ctx.user.cart = cart.splice(itemIndex, 1);
+        const itemIndex = cart.findIndex(e => (e.name === data.name) && (e.quantity == data.quantity));
+        if (itemIndex < 0) throw new Error('item not found');
+        console.log({ itemIndex });
+        cart.splice(itemIndex, 1);
         // send the updated cart as the response
-        ctx.body = { cart: ctx.user.cart }
+        ctx.body = { cart: ctx.user.getCart() }
         ctx.status = 201;
     } catch (e) {
         console.log(e);
-        ctx.body = { error: e.message }
-        ctx.status = 401;
+        ctx.throw(401, e.message)
     }
 });
 
 // purchase list of items
 router.post('/cart/purchase', customerAuth, (ctx) => {
-    const reqBody = ctx.request.body;
-    const user = ctx.user;
+    try {
+        console.log('Purchasing item');
+        const reqBody = ctx.request.body;
+        const user = ctx.user;
+        console.log({ items: reqBody.items })
 
-    const userCart = user.cart.filter((item) => {
-        reqBody.items.includes(item.name)
-    })
 
-    userCart.forEach((item) => {
-        item.purchase();
-        // remove the purchase item from the user cart
-        user.cart.filter((e) => !(e.name === item));
-    });
+        const userCart = user.cart
+        // .filter((item) => reqBody.items.includes(item.name));
+
+        const itemsPurchased = [];
+        userCart.forEach((item) => {
+            if (item.purchase()) {
+                console.log('item purchase', item.name)
+                itemsPurchased.push(item);
+                // remove the purchase item from the user cart
+                user.cart = user.cart.filter((e) => !(e.name === item.name));
+            } else {
+                console.log('item was not purchased', item.name);
+            }
+        });
+
+        ctx.body = { cart: ctx.user.getCart(), itemsPurchased }
+        ctx.status = 201;
+    } catch (error) {
+        console.log(error);
+    }
 });
 
 // get public customer data

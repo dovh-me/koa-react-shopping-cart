@@ -6,10 +6,10 @@ module.exports = class Item {
     constructor({ trader, name, quantity, price, promotionPtg }) {
         this.id = `${Item.idNum}+${trader}`;
         this.name = name;
-        this.quantity = quantity;
-        this.price = price;
+        this.quantity = +quantity;
+        this.price = +price;
         this.trader = trader;
-        this.promotionPtg = promotionPtg;
+        this.promotionPtg = +promotionPtg;
         Item.idNum++;
     }
 

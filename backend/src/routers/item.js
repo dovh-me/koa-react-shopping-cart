@@ -31,7 +31,7 @@ router.patch('/item/update/:itemName', traderAuth, async (ctx) => {
         const itemName = ctx.params.itemName;
         // find the item 
         const item = items.get(itemName);
-        if (!item) ctx.throw(404, 'invalid item name');
+        if (!item) ctx.throw(400, 'invalid item name');
         if (item.trader !== ctx.user.username) ctx.throw(401, 'unauthorized operation');
         item.updateItem(ctx.request.body);
 

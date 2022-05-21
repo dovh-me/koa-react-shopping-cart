@@ -1,16 +1,12 @@
 import React, { Component } from 'react'
 import ErrorAlert from './ErrorAlert';
+import SuccessAlert from './SuccessAlert';
 
 export default class AlertSection extends Component {
     constructor(props) {
         super(props);
         console.log('props from AlertSection', this.props)
-        this.state = {
-            errors: this.props.errorList
-        };
     }
-
-    co
 
     render() {
         return (
