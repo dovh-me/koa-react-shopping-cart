@@ -3,6 +3,35 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
-.navbar .logoutBtn:hover {
+.navbar {
+    padding: 10px;
+}
+
+.navbar .loginBtn {
+    color: rgba(49, 27, 250, 0.8);
     cursor: pointer;
+}
+
+.navbar .loginBtn:hover {
+    color: rgb(17, 0, 255);
+    cursor: pointer;
+}
+
+.navbar .logoutBtn {
+    color: rgba(255, 0, 0, .5);
+    cursor: pointer;
+}
+
+.navbar .logoutBtn:hover {
+    color: rgba(255, 0, 0, 1);
+    cursor: pointer;
+}
+
+.navbar .nav-item-custom {
+    margin-right: 10px;
+    color: rgba(0, 0, 0, .5);
+}
+
+.navbar .nav-item-custom:hover {
+    color: rgba(0, 0, 0, .8);
 }
