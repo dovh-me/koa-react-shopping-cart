@@ -13,6 +13,7 @@ import { NavBar } from './components/NavBar';
 
 import "./App.css";
 import Welcome from "./pages/Welcome";
+import { AxiosCustom as Axios, AxiosCustom } from "./axios";
 
 class App extends Component {
     constructor(props) {
@@ -47,6 +48,7 @@ class App extends Component {
         if (savedState !== 'undefined' && savedState) {
             const parsed = JSON.parse(savedState);
             this.setState(parsed);
+            (parsed.loginData && parsed.loginData.loginToken && AxiosCustom.setToken(parsed.loginData.loginToken)) || AxiosCustom.resetToken();
         }
     }
 
@@ -56,25 +58,15 @@ class App extends Component {
 
     setLoginSuccess(data) {
         this.setState({ isLoginSuccess: true, loginData: data });
+        Axios.setToken(data.loginToken);
     }
 
     setLogoutSuccess() {
         this.setState({ isLoginSuccess: false, loginData: undefined });
+        Axios.resetToken();
     }
 
     render() {
-        // const loginToken = this.state.loginToken;
-        // if (loginToken === null || loginToken === undefined) {
-        //     return (
-        //         <div>
-        //             <div id="errors"></div>
-        //             <Login onLoginSuccess={this.checkLoginToken} />
-        //         </div>
-        //     )
-        // } else {
-        //     return <div>Already logged in!</div>
-        // }
-
         return (
             <div>
                 <NavBar isLoggedIn={this.state.isLoginSuccess} loginData={this.state.loginData} />
@@ -85,7 +77,6 @@ class App extends Component {
                     <Route path="/logout" element={<Logout onLogoutSuccess={this.setLogoutSuccess} />} />
                     <Route path="/store" element={<Store loginData={this.state.loginData} />} />
                     <Route path="/customer/cart" element={<Cart loginData={this.state.loginData} />} />
-                    <Route path="/customer/store" element={<Store loginData={this.state.loginData} />} />
                     <Route path="/customer/wishlist" element={<Wishlist loginData={this.state.loginData} />} />
                     <Route path="/trader/inventory" element={<Inventory loginData={this.state.loginData} />} />
                     <Route path="/trader/searchCustomer" element={<SearchCustomer loginData={this.state.loginData} />} />

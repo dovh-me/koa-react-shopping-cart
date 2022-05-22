@@ -1,4 +1,4 @@
-import Axios from 'axios';
+import Axios from '../axios';
 import React, { useState } from 'react'
 import CustomerProfile from '../components/customerProfile';
 
@@ -14,11 +14,7 @@ export default function SearchCustomer(props) {
 
     const handleOnSearch = function (e) {
         e.preventDefault();
-        Axios.get(`http://localhost:9019/customers/get/${customerSearchValue}`, {
-            headers: {
-                authorization: `Bearer ${props.loginData.loginToken}`
-            }
-        }).then((response) => {
+        Axios.get(`/customers/get/${customerSearchValue}`).then((response) => {
             const { customer } = response.data;
             setCustomer(customer);
             console.log({ response })

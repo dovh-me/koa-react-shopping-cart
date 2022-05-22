@@ -1,5 +1,5 @@
 import React from 'react';
-import Axios from 'axios';
+import Axios from '../axios';
 
 import LoginSection from '../components/LoginSection';
 import CreateProfileSection from '../components/CreateProfileSection';
@@ -10,19 +10,19 @@ import { Navigate } from 'react-router-dom';
 class Login extends React.Component {
     handleTraderCreate(data) {
         // make the request to the backend endpoint
-        this.createUser('http://localhost:9019/traders/create', data);
+        this.createUser('/traders/create', data);
     }
     handleCustomerCreate(data) {
         // make the request to the backend endpoint
-        this.createUser('http://localhost:9019/customers/create', data);
+        this.createUser('/customers/create', data);
     }
     handleTraderLogin(data) {
         // make the request to the backend endpoint
-        this.login('http://localhost:9019/traders/login', data, 'trader');
+        this.login('/traders/login', data, 'trader');
     }
     handleCustomerLogin(data) {
         // make the request to the backend endpoint
-        this.login('http://localhost:9019/customers/login', data, 'customer');
+        this.login('/customers/login', data, 'customer');
     }
 
     componentDidUpdate() {

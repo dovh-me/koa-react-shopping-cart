@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Axios from 'axios';
+import Axios, { AxiosCustom } from '../axios';
 import AddItemSection from '../components/AddItemSection';
 import AddPromotionSection from '../components/AddPromotionSection';
 import InventoryItem from '../components/InventoryItem';
@@ -25,31 +25,23 @@ export default class Inventory extends Component {
     }
 
     fetchInventory() {
+        console.log('Axios auth token', AxiosCustom.getToken());
         console.log(this.props)
         if (!this.props.loginData) return;
 
-        Axios.get('http://localhost:9019/traders/inventory',
-            {
-                headers: {
-                    authorization: `Bearer ${this.props.loginData.loginToken}`
-                }
-            }).then((response) => {
-                const { data } = response;
-                console.log({ data });
-                this.setState({
-                    userInventory: data.inventory
-                });
-            }).catch((error) => {
-                console.log(error);
+        Axios.get('/traders/inventory').then((response) => {
+            const { data } = response;
+            console.log({ data });
+            this.setState({
+                userInventory: data.inventory
             });
+        }).catch((error) => {
+            console.log(error);
+        });
     }
 
     handleAddItem(data) {
-        Axios.post('http://localhost:9019/item/create', data, {
-            headers: {
-                authorization: `Bearer ${this.props.loginData.loginToken}`
-            }
-        }).then((response) => {
+        Axios.post('/item/create', data).then((response) => {
             const { data } = response;
             console.log({ data });
             this.setState({
@@ -61,11 +53,7 @@ export default class Inventory extends Component {
     }
 
     handleRemoveItem(itemName) {
-        Axios.delete(`http://localhost:9019/item/delete/${itemName}`, {
-            headers: {
-                authorization: `Bearer ${this.props.loginData.loginToken}`
-            }
-        }).then((response) => {
+        Axios.delete(`/item/delete/${itemName}`).then((response) => {
             const { data } = response;
             console.log({ data });
             this.setState({
@@ -79,11 +67,7 @@ export default class Inventory extends Component {
     handlePromotion(formData) {
         const itemName = formData.name;
         delete formData.name;
-        Axios.patch(`http://localhost:9019/item/update/${itemName}`, formData, {
-            headers: {
-                authorization: `Bearer ${this.props.loginData.loginToken}`
-            }
-        }).then((response) => {
+        Axios.patch(`/item/update/${itemName}`, formData).then((response) => {
             const { data } = response;
             console.log({ data });
             this.setState({

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate, Link } from 'react-router-dom';
-import Axios from 'axios';
+import Axios from '../axios';
 import CartItem from '../components/CartItem';
 
 class Cart extends React.Component {
@@ -18,7 +18,7 @@ class Cart extends React.Component {
         console.log(this.props)
         if (!this.props.loginData) return;
 
-        Axios.get('http://localhost:9019/cart/viewAll',
+        Axios.get('/cart/viewAll',
             {
                 headers: {
                     authorization: `Bearer ${this.props.loginData.loginToken}`
@@ -37,7 +37,7 @@ class Cart extends React.Component {
     }
 
     handleRemoveItem(item) {
-        Axios.post(`http://localhost:9019/cart/removeItem`, item, {
+        Axios.post(`/cart/removeItem`, item, {
             headers: {
                 authorization: `Bearer ${this.props.loginData.loginToken}`
             }
@@ -53,7 +53,7 @@ class Cart extends React.Component {
     }
 
     handlePurchaseItem(item) {
-        Axios.post(`http://localhost:9019/cart/purchase`, { items: [item] }, {
+        Axios.post(`/cart/purchase`, { items: [item] }, {
             headers: {
                 authorization: `Bearer ${this.props.loginData.loginToken}`
             }

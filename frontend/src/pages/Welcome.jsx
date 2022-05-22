@@ -4,7 +4,7 @@ import LoginSection from '../components/LoginSection';
 import CreateProfileSection from '../components/CreateProfileSection';
 import Dropdown from '../components/Dropdown';
 import AlertSection from '../components/AlertSection';
-import Axios from 'axios';
+import Axios from '../axios';
 
 function Welcome(props) {
     const [errorList, setErrorList] = useState([]);
@@ -14,19 +14,19 @@ function Welcome(props) {
 
     const handleTraderCreate = (data) => {
         // make the request to the backend endpoint
-        createUser('http://localhost:9019/traders/create', data);
+        createUser('/traders/create', data);
     }
     const handleCustomerCreate = (data) => {
         // make the request to the backend endpoint
-        createUser('http://localhost:9019/customers/create', data);
+        createUser('/customers/create', data);
     }
     const handleTraderLogin = (data) => {
         // make the request to the backend endpoint
-        login('http://localhost:9019/traders/login', data, 'trader');
+        login('/traders/login', data, 'trader');
     }
     const handleCustomerLogin = (data) => {
         // make the request to the backend endpoint
-        login('http://localhost:9019/customers/login', data, 'customer');
+        login('/customers/login', data, 'customer');
     }
 
     const createUser = (url, data) => {

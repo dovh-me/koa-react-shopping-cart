@@ -1,6 +1,6 @@
 import React from 'react';
 import StoreItem from '../components/storeItem';
-import Axios from 'axios';
+import Axios from '../axios';
 import AlertSection from '../components/AlertSection';
 
 class Store extends React.Component {
@@ -23,7 +23,7 @@ class Store extends React.Component {
     fetchStoreItems() {
         console.log(this.props);
 
-        Axios.get('http://localhost:9019/item/getAll').then((response) => {
+        Axios.get('/item/getAll').then((response) => {
             const { data } = response;
             console.log({ data });
             this.setState({
@@ -35,11 +35,7 @@ class Store extends React.Component {
     }
 
     handleAddToCart(data) {
-        Axios.post('http://localhost:9019/cart/addItem', data, {
-            headers: {
-                authorization: `Bearer ${this.props.loginData.loginToken}`
-            }
-        }).then((response) => {
+        Axios.post('/cart/addItem', data).then((response) => {
             const { data } = response;
             console.log({ data });
             this.setState((state) => ({
@@ -53,11 +49,7 @@ class Store extends React.Component {
         });
     }
     handleAddToWishlist(data) {
-        Axios.post('http://localhost:9019/wishlist/addItem', { item: data }, {
-            headers: {
-                authorization: `Bearer ${this.props.loginData.loginToken}`
-            }
-        }).then((response) => {
+        Axios.post('/wishlist/addItem', { item: data }).then((response) => {
             const { data } = response;
             console.log({ data });
             this.setState((state) => ({

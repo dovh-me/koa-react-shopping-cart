@@ -25,10 +25,10 @@ export class NavBar extends React.Component {
                             (
                                 <React.Fragment>
                                     <div className="nav-item nav-item-custom">
-                                        <Link className="nav-link" to="/wishlist">Wishlist</Link >
+                                        <Link className="nav-link" to="/customer/wishlist">Wishlist</Link >
                                     </div>
                                     <div className="nav-item nav-item-custom">
-                                        <Link className="nav-link" to="/cart">Cart</Link >
+                                        <Link className="nav-link" to="/customer/cart">Cart</Link >
                                     </div>
                                 </React.Fragment>
                             ) ||
@@ -36,7 +36,7 @@ export class NavBar extends React.Component {
                                 (
                                     <React.Fragment>
                                         <div className="nav-item nav-item-custom">
-                                            <Link className="nav-link" to="/inventory">Inventory</Link >
+                                            <Link className="nav-link" to="/trader/inventory">Inventory</Link >
                                         </div>
                                         <div className="nav-item nav-item-custom">
                                             <Link className="nav-link" to="/trader/searchCustomer">Search Customer</Link >
