@@ -35,3 +35,16 @@
 .navbar .nav-item-custom:hover {
     color: rgba(0, 0, 0, .8);
 }
+
+/* .dropdown-custom .option {
+    width: '100%';
+    height: 'auto';
+    word-wrap: 'break-word';
+    background-color: '#eee';
+    color: '#000';
+}
+
+.dropdown-custom .option:hover {
+    background-color: '#ccc';
+    color: '#000';
+} */

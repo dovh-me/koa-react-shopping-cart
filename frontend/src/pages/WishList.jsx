@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import WishlistItem from '../components/WishlistItem';
 
-import Axios from 'axios';
+import Axios from '../axios';
 
 class WishList extends React.Component {
     constructor(props) {
@@ -19,30 +19,21 @@ class WishList extends React.Component {
         console.log(this.props)
         if (!this.props.loginData) return;
 
-        Axios.get('http://localhost:9019/wishlist/viewAll',
-            {
-                headers: {
-                    authorization: `Bearer ${this.props.loginData.loginToken}`
-                }
-            }).then((response) => {
-                const { data } = response;
-                console.log({ data });
-                const wishlist = data.wishlist;
-                console.log({ cart: wishlist })
-                this.setState({
-                    userWishlist: wishlist
-                });
-            }).catch((error) => {
-                console.log(error);
-            })
+        Axios.get('/wishlist/viewAll').then((response) => {
+            const { data } = response;
+            console.log({ data });
+            const wishlist = data.wishlist;
+            console.log({ cart: wishlist })
+            this.setState({
+                userWishlist: wishlist
+            });
+        }).catch((error) => {
+            console.log(error);
+        })
     }
 
     handleRemoveItem(item) {
-        Axios.post(`http://localhost:9019/wishlist/removeItem`, { item }, {
-            headers: {
-                authorization: `Bearer ${this.props.loginData.loginToken}`
-            }
-        }).then((response) => {
+        Axios.post(`/wishlist/removeItem`, { item }).then((response) => {
             const { data } = response;
             console.log('handleRemoveItem', { data }, { state: this.state });
             this.setState({
@@ -54,11 +45,7 @@ class WishList extends React.Component {
     }
 
     handleMoveToCart(item) {
-        Axios.post(`http://localhost:9019/wishlist/moveToCart`, { item }, {
-            headers: {
-                authorization: `Bearer ${this.props.loginData.loginToken}`
-            }
-        }).then((response) => {
+        Axios.post(`/wishlist/moveToCart`, { item }).then((response) => {
             console.log('setting new wishlist state for update')
             this.setState({
                 userWishlist: response.data.wishlist
