@@ -1,5 +1,5 @@
 # Koa - React - Shopping cart 🛍️🛒
-A simple shopping cart web application using KoaJs for backend and ReactJs for frontend. This was a practise project to learn koajs and reactjs basics
+A simple shopping cart web application using KoaJs for backend and ReactJs for frontend. This was a practice project to learn koajs and reactjs basics
 
 *Not production ready* **AT ALL** ☠️☠️☠️
 
